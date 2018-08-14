@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MC_Place_Limiter.iml" filepath="$PROJECT_DIR$/.idea/modules/MC_Place_Limiter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MC_Place_Limiter_main.iml" filepath="$PROJECT_DIR$/.idea/modules/MC_Place_Limiter_main.iml" group="MC_Place_Limiter" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MC_Place_Limiter_test.iml" filepath="$PROJECT_DIR$/.idea/modules/MC_Place_Limiter_test.iml" group="MC_Place_Limiter" />
+    </modules>
+  </component>
+</project>
