@@ -74,14 +74,14 @@ public class Main {
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(GroupData.class), new GroupDataSerializer());
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(BlockData.class), new BlockData.BlockDataSerializer());
 
-        loadCommands(); logger.info("Load commands...");
-        loadData(); logger.info("Load data...");
+        loadCommands(); logger.info("[Place limiter] Load commands...");
+        loadData(); logger.info("[Place limiter] Load data...");
     }
 
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
-        logger.info("Started!");
+        logger.info("[Place limiter] Started!");
     }
 
 
@@ -298,8 +298,6 @@ public class Main {
             String itemID = location.getBlockType().getName().toLowerCase();
             return itemID;
         }
-
-
     }
 
     public Logger getLogger() {
