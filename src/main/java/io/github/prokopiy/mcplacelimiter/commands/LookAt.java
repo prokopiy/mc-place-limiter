@@ -43,7 +43,9 @@ public class LookAt implements CommandExecutor {
         if (hitOpt.isPresent()) {
             BlockRayHit<World> hit = hitOpt.get();
             String itemId = plugin.getLocationID(hit.getLocation());
-
+            if (itemId == null) {
+                throw new CommandException(Text.of("Is null!"));
+            }
             String g = plugin.getBlockGroup(itemId);
             if ( g != null) {
                 throw new CommandException(Text.of("Block already in group " + g));

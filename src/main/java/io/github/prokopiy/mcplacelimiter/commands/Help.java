@@ -31,19 +31,20 @@ public class Help implements CommandExecutor {
         PaginationService paginationService = Sponge.getServiceManager().provide(PaginationService.class).get();
 
         List<Text> contents = new ArrayList<>();
-        if (sender.hasPermission(Permissions.WHATS_THIS)) contents.add(plugin.fromLegacy("&3/placerestrict &badd - &7Show the block ID the player is looking at"));
-        if (sender.hasPermission(Permissions.ADD_GROUP)) contents.add(plugin.fromLegacy("&3/placerestrict &baddgroup - &7Add group."));
-        if (sender.hasPermission(Permissions.ADD_BLOCK)) contents.add(plugin.fromLegacy("&3/placerestrict &badd - &7Add block, the player is looking at, to the limited block list."));
-        if (sender.hasPermission(Permissions.REMOVE_BLOCK)) contents.add(plugin.fromLegacy("&3/placerestrict &bremove - &7Remove block, the player is looking at, to the limited block list."));
-//        if (sender.hasPermission(Permissions.EDIT_BANNED_ITEM)) contents.add(plugin.fromLegacy("&3/restrict &bedit (option) (value) - &7List options for a banned item or edit an option."));
-        //if (sender.hasPermission(Permissions.SEARCH_WORLD)) contents.add(plugin.fromLegacy("&3/restrict &bsearch (itemID) - &7Search active chunks for a block"));
-//        if (sender.hasPermission(Permissions.LIST_BANNED_ITEMS)) contents.add(plugin.fromLegacy("&3/restrict &blist &6| &3/banneditems &b- &7List all current banned items"));
+        if (sender.hasPermission(Permissions.WHATS_THIS)) contents.add(plugin.fromLegacy("&3/placelimiter &bwhatsthis - &7Show the block ID the player is looking at"));
+        if (sender.hasPermission(Permissions.GROUP_ADD)) contents.add(plugin.fromLegacy("&3/placelimiter &bgroup [add] [GroupName] - &7Add group."));
+        if (sender.hasPermission(Permissions.GROUP_REMOVE)) contents.add(plugin.fromLegacy("&3/placelimiter &bgroup [remove] [GroupName] - &7Remove group and all blocks in."));
+        if (sender.hasPermission(Permissions.GROUP_UPDATE)) contents.add(plugin.fromLegacy("&3/placelimiter &bgroup [update] [GroupName] - &7Update new limit of group."));
+        if (sender.hasPermission(Permissions.GROUP_INFO)) contents.add(plugin.fromLegacy("&3/placelimiter &bgroup [info] [GroupName] - &7Show group info."));
+        if (sender.hasPermission(Permissions.GROUP_LIST)) contents.add(plugin.fromLegacy("&3/placelimiter &bgroup [list] - &7Show list of groups."));
+        if (sender.hasPermission(Permissions.BLOCK_ADD)) contents.add(plugin.fromLegacy("&3/placelimiter &bblock [add] [GroupName]- &7Add block, the player is looking at, to the limited block group."));
+        if (sender.hasPermission(Permissions.BLOCK_REMOVE)) contents.add(plugin.fromLegacy("&3/placelimiter &bblock [remove] - &7Remove block, the player is looking at, to the limited block list."));
 
         if (contents.isEmpty()) {
             contents.add(plugin.fromLegacy("&cYou currently do not have any permissions for this plugin."));
         }
         paginationService.builder()
-                .title(plugin.fromLegacy("&6PlaceRestrict Help"))
+                .title(plugin.fromLegacy("&6Place Limiter Help"))
                 .contents(contents)
                 .header(plugin.fromLegacy("&3[] = required  () = optional"))
                 .padding(Text.of("="))

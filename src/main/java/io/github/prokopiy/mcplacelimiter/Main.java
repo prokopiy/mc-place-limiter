@@ -12,13 +12,14 @@ import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.block.BlockState;
+import org.spongepowered.api.block.tileentity.TileEntity;
 import org.spongepowered.api.command.CommandManager;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.DefaultConfig;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.plugin.Plugin;
@@ -74,80 +75,94 @@ public class Main {
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(GroupData.class), new GroupDataSerializer());
         TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(BlockData.class), new BlockData.BlockDataSerializer());
 
-        loadCommands(); logger.info("[Place limiter] Load commands...");
-        loadData(); logger.info("[Place limiter] Load data...");
+        loadCommands(); logger.info("Load commands...");
+        loadData(); logger.info("Load data...");
     }
 
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
-        logger.info("[Place limiter] Started!");
+        logger.info("Place limiter started.");
     }
 
+
+    @Listener
+    public void onPluginReload(GameReloadEvent event) throws IOException, ObjectMappingException {
+        this.config = new Config(this);
+        loadData();
+        logger.info("Place limiter reloaded.");
+    }
 
 
     private void loadCommands() {
 
-        // /placerestrict whatsthis
+        // /placelimiter whatsthis
         CommandSpec whatsThis = CommandSpec.builder()
                 .description(Text.of("Show the block ID the player is looking at"))
                 .executor(new Whatsthis(this))
                 .permission(Permissions.WHATS_THIS)
                 .build();
 
-        // /placerestrict addgroup
+        // /placelimiter addgroup
         CommandSpec groupAdd = CommandSpec.builder()
                 .description(Text.of("Add group"))
                 .executor(new AddGroup(this))
                 .arguments(GenericArguments.optional(GenericArguments.string(Text.of("GroupName"))),
                         GenericArguments.optional(GenericArguments.integer(Text.of("GroupLimit"))))
-                .permission(Permissions.ADD_GROUP)
+                .permission(Permissions.GROUP_ADD)
                 .build();
 
-        // /placerestrict removegroup
+        // /placelimiter removegroup
         CommandSpec groupRemove = CommandSpec.builder()
                 .description(Text.of("Remove group and all block in this"))
                 .executor(new RemoveGroup(this))
                 .arguments(GenericArguments.string(Text.of("GroupName")))
-                .permission(Permissions.REMOVE_GROUP)
+                .permission(Permissions.GROUP_REMOVE)
                 .build();
 
-        // /placerestrict updategroup
+        // /placelimiter updategroup
         CommandSpec groupUpdate = CommandSpec.builder()
                 .description(Text.of("Update group limit"))
                 .executor(new UpdateGroup(this))
                 .arguments(GenericArguments.optional(GenericArguments.string(Text.of("GroupName"))),
                         GenericArguments.optional(GenericArguments.integer(Text.of("GroupLimit"))))
-                .permission(Permissions.UPDATE_GROUP)
+                .permission(Permissions.GROUP_UPDATE)
                 .build();
 
-        // /placerestrict group info
+        // /placelimiter group info
         CommandSpec groupInfo = CommandSpec.builder()
                 .description(Text.of("Info group limit"))
                 .executor(new InfoGroup(this))
                 .arguments(GenericArguments.optional(GenericArguments.string(Text.of("GroupName"))))
-                .permission(Permissions.INFO_GROUP)
+                .permission(Permissions.GROUP_INFO)
                 .build();
 
-        // /placerestrict add
+        // /placelimiter group list
+        CommandSpec groupList = CommandSpec.builder()
+                .description(Text.of("Groups list"))
+                .executor(new ListGroup(this))
+                .permission(Permissions.GROUP_LIST)
+                .build();
+
+        // /placelimiter block add
         CommandSpec blockAddLookAt = CommandSpec.builder()
                 .description(Text.of("Add the block, the player is looking at, to the group of limited blocks"))
                 .executor(new LookAt(this))
                 .arguments(GenericArguments.string(Text.of("GroupName")))
-                .permission(Permissions.ADD_BLOCK)
+                .permission(Permissions.BLOCK_ADD)
                 .build();
 
 
-        // /placerestrict remove
+        // /placelimiter block remove
         CommandSpec blockRemove = CommandSpec.builder()
                 .description(Text.of("Remove limited block"))
                 .executor(new RemoveBlock(this))
-                .arguments(GenericArguments.string(Text.of("BlockId")))
-                .permission(Permissions.REMOVE_BLOCK)
+                .arguments(GenericArguments.remainingJoinedStrings(Text.of("BlockId")))
+                .permission(Permissions.BLOCK_REMOVE)
                 .build();
 
 
-        // /placerestrict block
+        // /placelimiter block
         CommandSpec block = CommandSpec.builder()
                 .description(Text.of("Base placerestrict block command"))
                 .executor(new Help(this))
@@ -155,7 +170,7 @@ public class Main {
                 .child(blockRemove, "remove")
                 .build();
 
-        // /placerestrict group
+        // /placelimiter group
         CommandSpec group = CommandSpec.builder()
                 .description(Text.of("Base placerestrict block command"))
                 .executor(new Help(this))
@@ -163,12 +178,13 @@ public class Main {
                 .child(groupRemove, "remove")
                 .child(groupUpdate, "update")
                 .child(groupInfo, "info")
+                .child(groupList, "list")
                 .build();
 
 
         // /placerestrict
-        CommandSpec placerestrict = CommandSpec.builder()
-                .description(Text.of("Base placerestrict command"))
+        CommandSpec placelimiter = CommandSpec.builder()
+                .description(Text.of("Base placelimiter command"))
                 .executor(new Help(this))
                 .child(whatsThis, "whatsthis")
                 .child(block, "block")
@@ -179,7 +195,7 @@ public class Main {
 //        cmdManager.register(this, whatsThis, "whatsthis");
 //        cmdManager.register(this, itemAddLookAt, "itemAddLookAt");
 //        cmdManager.register(this, itemAddHand, "itemAddHand");
-        cmdManager.register(this, placerestrict, "placerestrict");
+        cmdManager.register(this, placelimiter, "placelimiter");
     }
 
 
@@ -292,10 +308,19 @@ public class Main {
 
 
     public String getLocationID(Location<World> location) {
-        if (location.getTileEntity().isPresent()) {
-            return location.getTileEntity().get().getType().getId().toLowerCase();
+        if (location == null) {
+            return null;
         } else {
-            String itemID = location.getBlockType().getName().toLowerCase();
+            String itemID = null;
+            if (location.getTileEntity().isPresent()) {
+                try {
+                    itemID = location.getTileEntity().get().getType().getId().toLowerCase().replaceAll(" ", "_");
+                } catch (Exception e) {};
+            } else {
+                try {
+                    itemID = location.getBlockType().getName().toLowerCase().replaceAll(" ", "_");
+                } catch (Exception e) {};
+            }
             return itemID;
         }
     }

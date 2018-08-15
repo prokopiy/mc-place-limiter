@@ -35,14 +35,17 @@ public class Whatsthis implements CommandExecutor {
             BlockRayHit<World> hit = hitOpt.get();
             String itemId = plugin.getLocationID(hit.getLocation());
 //            plugin.logToFile("ban-list", player.getName() + " added " +mainHandItem.getTranslation().get()+ " to the ban list");
-            String msg = "&6This block is: &e" + itemId;
-            String gn = plugin.getBlockGroup(itemId);
-            Integer gl = plugin.getGroupLimit(gn);
-            if (gn != null) {
-                msg = msg + " &6in &e" + gn + " &6witch limit &e" + gl.toString() + " &6blocks.";
+            if (itemId != null) {
+                String msg = "&6This block is: &e" + itemId;
+                String gn = plugin.getBlockGroup(itemId);
+                Integer gl = plugin.getGroupLimit(gn);
+                if (gn != null) {
+                    msg = msg + " &6in &e" + gn + " &6witch limit &e" + gl.toString() + " &6blocks.";
+                }
+                player.sendMessage(plugin.fromLegacy(msg));
+            } else {
+                throw new CommandException(Text.of("Is null!"));
             }
-            player.sendMessage(plugin.fromLegacy(msg));
-
         } else {
             throw new CommandException(Text.of("Is empty!"));
         }

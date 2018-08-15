@@ -2,6 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="mc-place-limiter_main" target="1.8" />
+      <module name="mc-place-limiter_test" target="1.8" />
       <module name="MC_Place_Limiter_main" target="1.8" />
       <module name="MC_Place_Limiter_test" target="1.8" />
     </bytecodeTargetLevel>

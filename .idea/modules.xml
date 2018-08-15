@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MC_Place_Limiter.iml" filepath="$PROJECT_DIR$/.idea/modules/MC_Place_Limiter.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MC_Place_Limiter_main.iml" filepath="$PROJECT_DIR$/.idea/modules/MC_Place_Limiter_main.iml" group="MC_Place_Limiter" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MC_Place_Limiter_test.iml" filepath="$PROJECT_DIR$/.idea/modules/MC_Place_Limiter_test.iml" group="MC_Place_Limiter" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mc-place-limiter.iml" filepath="$PROJECT_DIR$/.idea/modules/mc-place-limiter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mc-place-limiter_main.iml" filepath="$PROJECT_DIR$/.idea/modules/mc-place-limiter_main.iml" group="mc-place-limiter" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mc-place-limiter_test.iml" filepath="$PROJECT_DIR$/.idea/modules/mc-place-limiter_test.iml" group="mc-place-limiter" />
     </modules>
   </component>
 </project>

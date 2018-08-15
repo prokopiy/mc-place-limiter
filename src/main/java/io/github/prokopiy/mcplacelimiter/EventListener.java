@@ -38,8 +38,10 @@ public class EventListener {
         if (limitedGroup != null) {
             String blockId = plugin.getLocationID(targetBlock.getLocation().get());
             Integer groupLimit = plugin.getGroupLimit(limitedGroup);
-            Date date = new Date();
-            plugin.logToFile("place-restrict-log", date + " - " +  player.getName() + " tried to place " + blockId + " in " + targetBlock.getPosition().toString());
+            if (Config.logToFile) {
+                Date date = new Date();
+                plugin.logToFile("place-limiter-log", date + " - " +  player.getName() + " tried to place " + blockId + " in " + targetBlock.getPosition().toString());
+            }
             if (groupLimit < 1) {
                 player.sendMessage(plugin.fromLegacy("&6The &e" + blockId + " &6is banned!"));
                 event.setCancelled(true);
@@ -57,7 +59,11 @@ public class EventListener {
 
     private String getLimitedGroup(BlockSnapshot blockSnapshot) {
         String itemID = plugin.getLocationID(blockSnapshot.getLocation().get());
-        return plugin.getBlockGroup(itemID);
+        if (itemID != null) {
+            return plugin.getBlockGroup(itemID);
+        } else {
+            return null;
+        }
     }
 
 
@@ -66,16 +72,20 @@ public class EventListener {
         World world = player.getWorld();
         Chunk chunk = world.getChunkAtBlock(targetBlock.getPosition()).get();
         Integer limit = plugin.getGroupLimit(groupName);
+        String blockId;
         Vector3i min = chunk.getBlockMin();
         Vector3i max = chunk.getBlockMax();
         for (int y = min.getY(); y <= max.getY(); y++) {
             for (int x = min.getX(); x <= max.getX(); x++) {
                 for (int z = min.getZ(); z <= max.getZ(); z++) {
                     Location blockLoc = chunk.getLocation(x, y, z);
-                    if (groupName.equals(plugin.getBlockGroup(plugin.getLocationID(blockLoc)))) {
-                        count += 1;
+                    blockId = plugin.getLocationID(blockLoc);
+                    if (blockId != null){
+                        if (groupName.equals(plugin.getBlockGroup(blockId))) {
+                            count += 1;
+                        }
+                        if (count > limit) {return count;}
                     }
-                    if (count > limit) {return count;}
                 }
             }
         }
